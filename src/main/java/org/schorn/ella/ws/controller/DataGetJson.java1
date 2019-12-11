@@ -1,0 +1,98 @@
+
+package org.schorn.ella.ws.api;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+
+@Path("/json")
+@Consumes()
+@Produces({"application/json"})
+
+/**
+ * 
+ * @author schorn
+ *
+ */
+@Deprecated
+public class DataGetJson {
+	@Context
+    private HttpHeaders headers;
+
+	
+	@GET
+	@Path("/list/{context}/{object_type}/{value_type}")
+	public Response getList(
+			@PathParam("context") String context,
+			@PathParam("object_type") String object_type,
+			@PathParam("value_type") String value_type
+			) {
+		APIUtil.Parameters parameters = APIUtil.Parameters.create(Action.DATA_LIST, Method.GET, ContentType.JSON);
+		parameters.set(APIUtil.Param.CONTEXT, context);
+		parameters.set(EntityType.OBJECT_TYPE, object_type);
+		parameters.set(EntityType.VALUE_TYPE, value_type);
+		return ServiceHandler.route(headers, parameters).build();
+	}
+
+
+	@GET
+	@Path("/query/{context}/{object_type}/{value_type}/{value}")
+	public Response getResults(
+			@PathParam("context") String context,
+			@PathParam("object_type") String object_type,
+			@PathParam("value_type") String value_type,
+			@PathParam("value") String value
+			) {
+		APIUtil.Parameters parameters = APIUtil.Parameters.create(Action.DATA_QUERY, Method.GET, ContentType.JSON);
+		parameters.set(APIUtil.Param.CONTEXT, context);
+		parameters.set(EntityType.OBJECT_TYPE, object_type);
+		parameters.set(EntityType.VALUE_TYPE, value_type);
+		parameters.set(EntityType.VALUE, value);
+		//return ServiceAPIHandlers.query(headers, parameters).build();
+		return ServiceHandler.route(headers, parameters).build();
+		
+	}
+
+	/*
+	 * CORS
+	 */
+	@OPTIONS
+	@Path("/list/{context}/{object_type}/{value_type}")
+	public Response optionsList(
+			@PathParam("context") String context,
+			@PathParam("object_type") String object_type,
+			@PathParam("value_type") String value_type
+			) {
+		APIUtil.Parameters parameters = APIUtil.Parameters.create(Action.DATA_LIST, Method.OPTIONS, ContentType.JSON);
+		parameters.set(APIUtil.Param.CONTEXT, context);
+		//return ServiceAPIHandlers.doPreflight(headers, parameters).build();
+		return ServiceHandler.route(headers, parameters).build();
+		
+	}
+
+
+	/*
+	 * CORS
+	 */
+	@OPTIONS
+	@Path("/query/{context}/{object_type}/{value_type}/{value}")
+	public Response optionsResults(
+			@PathParam("context") String context,
+			@PathParam("object_type") String object_type,
+			@PathParam("value_type") String value_type,
+			@PathParam("value") String value
+			) {
+		APIUtil.Parameters parameters = APIUtil.Parameters.create(Action.DATA_QUERY, Method.OPTIONS, ContentType.JSON);
+		parameters.set(APIUtil.Param.CONTEXT, context);
+		//return ServiceAPIHandlers.doPreflight(headers, parameters).build();
+		return ServiceHandler.route(headers, parameters).build();
+		
+	}
+	
+}

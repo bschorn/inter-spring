@@ -1,0 +1,62 @@
+
+package org.schorn.ella.ws.api;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+
+import org.schorn.ella.ws.api.APIUtil.ContentType;
+import org.schorn.ella.ws.api.APIUtil.ActionCategory;
+import org.schorn.ella.ws.api.APIUtil.Method;
+import org.schorn.ella.ws.handler.ServiceHandler;
+
+@Path("/html/repo")
+@Consumes()
+@Produces({"text/html"})
+
+/**
+ * 
+ * @author schorn
+ *
+ */
+@Deprecated
+public class RepoGetHtml {
+	@Context
+    private HttpHeaders headers;
+
+	/*
+	@GET
+	@Path("/")
+	public Response getRepo() {
+		APIUtil.Parameters parameters = APIUtil.Parameters.create(ActionCategory.PAGE, Method.GET, ContentType.HTML);
+		parameters.set(APIUtil.Param.HTML_PAGE, "repo_start_page.html");
+		return ServiceHandler.HANDLE(headers, parameters).build();
+	}
+	
+	@GET
+	@Path("/{context}")
+	public Response getRepoContext(@PathParam("context") String context) {
+		APIUtil.Parameters parameters = APIUtil.Parameters.create(ActionCategory.PAGE, Method.GET, ContentType.HTML);
+		parameters.set(APIUtil.Param.CONTEXT, context);
+		parameters.set(APIUtil.Param.HTML_PAGE, "repo_start_page.html");
+		return ServiceHandler.HANDLE(headers, parameters).build();
+	}
+	 */
+	
+	@GET
+	@Path("/stats/{context}/{view}")
+	public Response getRepoContextStats(@PathParam("context") String context, @PathParam("view") String view) {
+		APIUtil.Parameters parameters = APIUtil.Parameters.create(ActionCategory.REPO, Method.GET, ContentType.HTML);
+		parameters.set(APIUtil.Param.CONTEXT, context);
+		parameters.set(APIUtil.Param.ENTITY_TYPE, view);
+		return ServiceHandler.route(headers, parameters).build();
+	}
+	
+
+	
+}

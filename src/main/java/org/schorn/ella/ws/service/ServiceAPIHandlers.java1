@@ -1,0 +1,493 @@
+package org.schorn.ella.ws.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+
+/**
+ *
+ * @author schorn
+ *
+ */
+@Deprecated
+public class ServiceAPIHandlers {
+
+    static public final String EXCEPTION = "{ \"Exception\": \"%s\" }";
+
+    /**
+     * Get a list of available context names
+     *
+     * @return
+     */
+    static public List<String> contextNames() {
+        return ServiceProvider.contextNames();
+    }
+
+    /**
+     * Serve Page (Context will be selected from page)
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder servePage(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = Response.ok();
+        try {
+            String pageName = parameters.get(APIUtil.Param.HTML_PAGE).toString();
+            //builder.entity(AdminPages.instance().serve_page(pageName, ServiceProvider.contextNames()));
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     * Serve Context Page (context has already been selected)
+     *
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder serveContextPage(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = Response.ok();
+        try {
+            Map<String, String> findAndReplace = new HashMap<>();
+            if (parameters.get(APIUtil.Param.CONTEXT) != null) {
+                String context = parameters.getString(APIUtil.Param.CONTEXT);
+                if (context != null) {
+                    //findAndReplace.put(AdminPages.CONTEXT, context);
+                }
+            }
+            String fileType = parameters.getString(EntityType.FILE_TYPE);
+            if (fileType != null) {
+                //findAndReplace.put(AdminPages.FILE_TYPE, fileType);
+            }
+            String objectType = parameters.getString(EntityType.OBJECT_TYPE);
+            if (objectType != null) {
+                //findAndReplace.put(AdminPages.OBJECT_TYPE, objectType);
+            }
+            String valueType = parameters.getString(EntityType.VALUE_TYPE);
+            if (valueType != null) {
+                //findAndReplace.put(AdminPages.VALUE_TYPE, valueType);
+            }
+            String pageName = parameters.get(APIUtil.Param.HTML_PAGE).toString();
+            //builder.entity(AdminPages.instance().serve_page(pageName, findAndReplace));
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder getRepoSummary(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = Response.ok();
+        try {
+            String context = parameters.getString(APIUtil.Param.CONTEXT);
+            String entity_type = parameters.getString(APIUtil.Param.ENTITY_TYPE);
+            String entity_value = parameters.getString(APIUtil.Param.ENTITY_VALUE);
+            ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+            switch (entity_type) {
+                case "object_type":
+                    switch (contentType) {
+                        case HTML:
+                            builder.entity(ServiceProvider.ContentType().getHTMLForm(context, entity_value));
+                            break;
+                        default:
+                            throw new Exception("Unsupported");
+                    }
+                case "value_type":
+                    break;
+            }
+            //builder.entity(AdminPages.instance().context_page("*"));
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder getRepoStats(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = Response.ok();
+        try {
+            builder.entity(
+                    ServiceProvider.ContentType().getHTMLTable(
+                            parameters.getString(APIUtil.Param.CONTEXT),
+                            ServiceProvider.Query().getRepo(
+                                    parameters.getString(APIUtil.Param.CONTEXT),
+                                    parameters.getString(APIUtil.Param.ENTITY_TYPE))
+                    ));
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder getRequest(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+            String context = parameters.getString(APIUtil.Param.CONTEXT);
+            String request = parameters.getString(APIUtil.Param.ENTITY_VALUE);
+            Object results = null;
+            switch (contentType) {
+                case HTML:
+                    results = ServiceProvider.Query().getResponse(context, request);
+                    builder.entity(ServiceProvider.ContentType().getHTMLTables(context, results));
+                    break;
+                case JSON:
+                    results = ServiceProvider.Query().getResponseAsString(context, request);
+                    builder.entity(results);
+                    break;
+            }
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder getRequestEvents(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+            String context = parameters.getString(APIUtil.Param.CONTEXT);
+            String request = parameters.getString(APIUtil.Param.ENTITY_VALUE);
+            Object results = null;
+            switch (contentType) {
+                case HTML:
+                    results = ServiceProvider.Query().getEventsResponse(context, request);
+                    builder.entity(ServiceProvider.ContentType().getHTMLTables(context, results));
+                    break;
+                case JSON:
+                    results = ServiceProvider.Query().getEventsResponseAsString(context, request);
+                    builder.entity(results);
+                    break;
+            }
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder doUpdate(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            builder.entity(
+                    ServiceProvider.Update()
+                            .save(
+                                    parameters.getString(APIUtil.Param.CONTEXT),
+                                    parameters.getString(APIUtil.Param.ENTITY_TYPE),
+                                    parameters.getString(APIUtil.Param.ENTITY_VALUE))
+            );
+        } catch (Exception ex) {
+
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder doUpload(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            String results = ServiceProvider.Update().fileUpload(
+                    parameters.getString(APIUtil.Param.CONTEXT),
+                    parameters.getString(EntityType.FILE_TYPE),
+                    parameters.getString(APIUtil.Param.ENTITY_TYPE),
+                    parameters.getString(APIUtil.Param.ENTITY_VALUE));
+            ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+            switch (contentType) {
+                case JSON:
+                    return builder.entity(results);
+                case HTML:
+                    return builder.entity(ServiceProvider.ContentType().getHTMLPre(results));
+            }
+        } catch (Exception ex) {
+
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Functions.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     * META Service
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder getMeta(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            String context = parameters.getString(APIUtil.Param.CONTEXT);
+            ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+            Set<APIUtil.EntityType> entityTypes = parameters.getEntities();
+            String objectType = null;
+            String memberType = null;
+            if (entityTypes.contains(APIUtil.EntityType.OBJECT_TYPE)) {
+                objectType = parameters.getString(APIUtil.EntityType.OBJECT_TYPE);
+            }
+            if (entityTypes.contains(APIUtil.EntityType.MEMBER_TYPE)) {
+                memberType = parameters.getString(APIUtil.EntityType.MEMBER_TYPE);
+            }
+            Object results = null;
+            String resultsName = null;
+            /*
+			 * Contexts
+             */
+            if (context != null && context.equals("*")) {
+                results = ServiceProvider.Meta().getContexts();
+                resultsName = "Contexts";
+            } else if (objectType == null && memberType == null) {
+                //
+                //  /meta - return the contents of the NodeLibrary for this context
+                //
+                //
+                String metaDump = ServiceProvider.Meta().get(context);
+                switch (contentType) {
+                    case JSON:
+                        return builder.entity(metaDump);
+                    case HTML:
+                        return builder.entity(ServiceProvider.ContentType().getHTMLPre(metaDump));
+                }
+            } else if (objectType != null && !objectType.equals("*") && memberType == null) {
+                //
+                //  /meta/{object_type} - return complete objectType details
+                //
+                switch (contentType) {
+                    case JSON:
+                        results = ServiceProvider.Meta().getMemberTypeDetails(context, objectType);
+                        break;
+                    case HTML:
+                        return builder.entity(ServiceProvider.ContentType().getHTMLForm(context, objectType));
+                }
+
+            } else if (objectType != null && objectType.equals("*") && memberType == null) {
+                //
+                //  /meta/* - return all objects within context
+                //
+                results = ServiceProvider.Meta().getEntityTypes(context);
+                resultsName = "Objects";
+
+            } else if (objectType != null && objectType.equals("*") && memberType != null && !memberType.equals("*")) {
+                //
+                //  /meta/*/{member_type} - return all objects containing member
+                //
+                results = ServiceProvider.Meta().getContainerTypes(context, memberType);
+                resultsName = "Containers";
+            } else if (objectType != null && !objectType.equals("*") && (memberType == null || memberType.equals("*"))) {
+                //
+                //  /meta/{object_type}/* - return members of an object
+                //
+                results = ServiceProvider.Meta().getMemberTypes(context, objectType);
+                resultsName = "Members";
+            } else if (objectType != null && !objectType.equals("*") && memberType != null && !memberType.equals("*")) {
+                //
+                //  /meta/{object_type}/{member_type} - return a specific member from an object
+                //
+                switch (contentType) {
+                    case JSON:
+                        results = ServiceProvider.Meta().getMemberTypeDetails(context, objectType, memberType);
+                        break;
+                    case HTML:
+                        return builder.entity(ServiceProvider.ContentType().getHTMLInputDiv(context, objectType, memberType, null));
+                }
+            }
+            if (results != null) {
+                switch (contentType) {
+                    case JSON:
+                        return builder.entity(ServiceProvider.ContentType().getJSONString(results));
+                    case HTML:
+                        return builder.entity(ServiceProvider.ContentType().getHTMLSelect(results, "-", resultsName));
+                    default:
+                }
+            }
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, Throwables.getStackTraceAsString(ex)));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder getHtmlForm(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            String context = parameters.getString(APIUtil.Param.CONTEXT);
+            String object_type = parameters.getString(APIUtil.Param.ENTITY_VALUE);
+            Object memberTypes = ServiceProvider.Meta().getMemberTypes(context, object_type);
+            ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+            switch (contentType) {
+                case JSON:
+                    builder.entity(
+                            ServiceProvider.ContentType().getJSONString(memberTypes)
+                    );
+                    break;
+                case HTML:
+                    builder.entity(
+                            ServiceProvider.ContentType().getHTMLSelect(memberTypes, object_type, "Members")
+                    );
+                    break;
+            }
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, ex.getMessage()));
+            return serverError;
+        }
+        return builder;
+    }
+
+    /**
+     *
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    public static ResponseBuilder getList(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            String context = parameters.getString(APIUtil.Param.CONTEXT);
+            String objectType = parameters.getString(APIUtil.EntityType.OBJECT_TYPE);
+            String valueType = parameters.getString(APIUtil.EntityType.VALUE_TYPE);
+            if (valueType != null) {
+                String ownerType = ServiceProvider.Meta().getKeyOwnerType(context, objectType, valueType);
+                if (ownerType != null) {
+                    objectType = ownerType;
+                }
+            }
+            if (objectType != null) {
+                Object results = ServiceProvider.Query().getList(context, objectType, valueType);
+                if (results != null) {
+                    ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+                    switch (contentType) {
+                        case JSON:
+                            return builder.entity(ServiceProvider.ContentType().getJSONString(results));
+                        case HTML:
+                            return builder.entity(ServiceProvider.ContentType().getHTMLSelect(results, objectType, valueType));
+                        default:
+                            throw new Exception("Unsupported");
+                    }
+                }
+            }
+            return builder;
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, ex.getMessage()));
+            return serverError;
+        }
+    }
+
+    /**
+     *
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    public static ResponseBuilder query(HttpHeaders headers, Parameters parameters) {
+        ResponseBuilder builder = doPreflight(headers, parameters);
+        try {
+            String context = parameters.getString(APIUtil.Param.CONTEXT);
+            String objectType = parameters.getString(APIUtil.EntityType.OBJECT_TYPE);
+            String valueType = parameters.getString(APIUtil.EntityType.VALUE_TYPE);
+            String value = parameters.getString(APIUtil.EntityType.VALUE);
+            Object results = ServiceProvider.Query().getQuery(context, objectType, valueType, value);
+            ContentType contentType = (ContentType) parameters.get(APIUtil.Param.RESPONSE_CONTENT_TYPE);
+            switch (contentType) {
+                case JSON:
+                    return builder.entity(ServiceProvider.ContentType().getJSONString(results));
+                case HTML:
+                    return builder.entity(ServiceProvider.ContentType().getHTMLTables(context, results));
+                default:
+                    throw new Exception("Unsupported");
+            }
+        } catch (Exception ex) {
+            ResponseBuilder serverError = Response.serverError();
+            serverError.entity(String.format(EXCEPTION, ex.getMessage()));
+            return serverError;
+        }
+    }
+
+    /**
+     * Preflight
+     *
+     * @param headers
+     * @param parameters
+     * @return
+     */
+    static public ResponseBuilder doPreflight(HttpHeaders headers) {
+        List<String> origins = headers.getRequestHeader("Origin");
+        if (origins != null && origins.size() > 0 && origins.get(0).length() > 0) {
+            String origin = origins.get(0);
+            return Response.ok()
+                    .header(CorsHeaderConstants.HEADER_AC_ALLOW_METHODS, "GET POST PUT")
+                    .header(CorsHeaderConstants.HEADER_AC_ALLOW_HEADERS, "Content-Type")
+                    .header(CorsHeaderConstants.HEADER_AC_MAX_AGE, 8000)
+                    .header(CorsHeaderConstants.HEADER_AC_ALLOW_ORIGIN, origin)
+                    .header(CorsHeaderConstants.HEADER_AC_ALLOW_CREDENTIALS, true);
+        } else {
+            return Response.ok();
+        }
+    }
+}
