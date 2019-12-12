@@ -23,8 +23,6 @@
  */
 package org.schorn.ella.ws.facade;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import org.schorn.ella.node.ActiveNode;
 /**
@@ -43,31 +41,13 @@ public class ObjectType {
     String object_level;
     @Getter
     String object_sub_role;
-    @Getter
-    List<MemberType> member_types;
 
     public ObjectType(ActiveNode.ObjectType objectType) {
         this.name = objectType.name();
-        this.domain_type = objectType.domainType().tagName();
-        this.object_role = objectType.objectRole().tagName();
-        this.object_level = objectType.objectLevel().tagName();
-        this.object_sub_role = objectType.objectSubRole().tagName();
-        this.member_types = new ArrayList<>();
-        for (ActiveNode.MemberDef memberDef : objectType.schema().memberDefs()) {
-            if (memberDef.activeType().role() == ActiveNode.Role.Value) {
-                this.member_types.add(new MemberType(memberDef));
-            }
-        }
-        for (ActiveNode.MemberDef memberDef : objectType.schema().memberDefs()) {
-            if (memberDef.activeType().role() == ActiveNode.Role.Object) {
-                this.member_types.add(new MemberType(memberDef));
-            }
-        }
-        for (ActiveNode.MemberDef memberDef : objectType.schema().memberDefs()) {
-            if (memberDef.activeType().role() == ActiveNode.Role.Array) {
-                this.member_types.add(new MemberType(memberDef));
-            }
-        }
+        this.domain_type = objectType.domainType().name();
+        this.object_role = objectType.objectRole().name();
+        this.object_level = objectType.objectLevel().name();
+        this.object_sub_role = objectType.objectSubRole().name();
     }
 
 }

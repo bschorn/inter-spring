@@ -23,19 +23,44 @@
  */
 package org.schorn.ella.ws.request;
 
+import java.util.List;
+import org.schorn.ella.context.AppContext;
+import org.schorn.ella.node.ActiveNode.ActiveType;
+
 /**
  *
  * @author bschorn
  */
-public class WSResponse<T> {
+public class WSResponse {
 
-    private final T t;
+    private final Object object;
+    private final Exception e;
 
-    public WSResponse(T t) {
-        this.t = t;
+    public WSResponse(ActiveType activeType) {
+        this.object = activeType;
+        this.e = null;
+    }
+    public WSResponse(AppContext appContext) {
+        this.object = appContext;
+        this.e = null;
+    }
+    public WSResponse(List list) {
+        this.object = list;
+        this.e = null;
     }
 
-    public T contents() {
-        return this.t;
+    public WSResponse(Exception e) {
+        this.e = e;
+        this.object = null;
+    }
+
+    public Object get() {
+        return this.object;
+    }
+
+    public void throwException() throws Exception {
+        if (e != null) {
+            throw e;
+        }
     }
 }

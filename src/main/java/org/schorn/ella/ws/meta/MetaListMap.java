@@ -34,6 +34,7 @@ import org.schorn.ella.context.AppContext;
 import org.schorn.ella.node.ActiveNode;
 import org.schorn.ella.ws.request.WSActiveType;
 import org.schorn.ella.ws.request.WSRequest;
+import org.schorn.ella.ws.request.WSResponse;
 import org.schorn.ella.ws.util.Functions;
 
 
@@ -43,15 +44,15 @@ import org.schorn.ella.ws.util.Functions;
  */
 public interface MetaListMap {
 
-    static public final Function<WSRequest, List> CONTEXT = r -> {
+    static public final Function<WSRequest, WSResponse> CONTEXT = r -> {
         List<Object> contexts = new ArrayList<>();
         for (AppContext context : AppContext.values()) {
             contexts.add(context);
         }
-        return contexts;
+        return new WSResponse(contexts);
     };
 
-    static public final Function<WSRequest, List> ARRAY = r -> {
+    static public final Function<WSRequest, WSResponse> ARRAY = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String array_type = (String) r.get(WSActiveType.ARRAY);
         if (context_str != null && array_type != null) {
@@ -69,46 +70,46 @@ public interface MetaListMap {
                         matched.add((ActiveNode.ArrayType) object);
                     }
                 }
-                return matched;
+                return new WSResponse(matched);
             }
         }
         return null;
     };
 
-    static public final Function<WSRequest, List> OBJECT = r -> {
+    static public final Function<WSRequest, WSResponse> OBJECT = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String object_type = (String) r.get(WSActiveType.OBJECT);
         if (context_str != null && object_type != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
                 AppContext context = optContext.get();
-                return context.objectTypes().stream().collect(Collectors.toList());
+                return new WSResponse(context.objectTypes().stream().collect(Collectors.toList()));
             }
         }
         return null;
     };
 
-    static public final Function<WSRequest, List> VALUE = r -> {
+    static public final Function<WSRequest, WSResponse> VALUE = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String value_type = (String) r.get(WSActiveType.VALUE);
         if (context_str != null && value_type != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
                 AppContext context = optContext.get();
-                return context.valueTypes().stream().collect(Collectors.toList());
+                return new WSResponse(context.valueTypes().stream().collect(Collectors.toList()));
             }
         }
         return null;
     };
 
-    static public final Function<WSRequest, List> FIELD = r -> {
+    static public final Function<WSRequest, WSResponse> FIELD = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String field_type = (String) r.get(WSActiveType.FIELD);
         if (context_str != null && field_type != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
                 AppContext context = optContext.get();
-                return context.fieldTypes().stream().collect(Collectors.toList());
+                return new WSResponse(context.fieldTypes().stream().collect(Collectors.toList()));
             }
         }
         return null;

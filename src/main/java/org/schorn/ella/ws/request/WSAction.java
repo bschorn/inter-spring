@@ -55,6 +55,13 @@ public enum WSAction implements WSParameter {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s.%s",
+                this.getClass().getSimpleName(),
+                this.name());
+    }
+
     static public WSAction parse(Object value) throws Exception {
         for (WSAction action : WSAction.values()) {
             if (action.name().equalsIgnoreCase(value.toString())) {

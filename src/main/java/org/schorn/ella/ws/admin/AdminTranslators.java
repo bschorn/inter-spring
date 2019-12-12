@@ -23,7 +23,6 @@
  */
 package org.schorn.ella.ws.admin;
 
-import org.schorn.ella.ws.meta.*;
 import java.util.List;
 import org.schorn.ella.context.AppContext;
 import org.schorn.ella.node.ActiveNode;

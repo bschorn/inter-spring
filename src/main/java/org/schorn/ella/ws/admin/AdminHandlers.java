@@ -23,13 +23,14 @@
  */
 package org.schorn.ella.ws.admin;
 
-import org.schorn.ella.ws.meta.*;
 import java.util.function.Function;
 import org.schorn.ella.context.AppContext;
+import org.schorn.ella.ws.meta.*;
 import org.schorn.ella.ws.request.WSAction;
 import org.schorn.ella.ws.request.WSActiveType;
 import org.schorn.ella.ws.request.WSDivision;
 import org.schorn.ella.ws.request.WSRequest;
+import org.schorn.ella.ws.request.WSResponse;
 import org.schorn.ella.ws.service.WSHandler;
 
 
@@ -40,19 +41,19 @@ import org.schorn.ella.ws.service.WSHandler;
 public enum AdminHandlers {
     Context(WSAction.PAGE, WSActiveType.CONTEXT, MetaTypeMap.CONTEXT, AppContext.class);
 
-    WSHandler<?> handler;
+    WSHandler handler;
 
-    AdminHandlers(WSAction action, WSActiveType activeType, Function<WSRequest, ?> function, Class<?> classOfT) {
+    AdminHandlers(WSAction action, WSActiveType activeType, Function<WSRequest, WSResponse> function, Class<?> classOfT) {
         this.handler = new WSHandler(WSDivision.META.id() + action.id() + activeType.id(), function, classOfT);
     }
 
-    public WSHandler<?> handler() {
+    public WSHandler handler() {
         return this.handler;
     }
 
-    static public WSHandler<?>[] handlers() {
+    static public WSHandler[] handlers() {
         int i = 0;
-        WSHandler<?>[] handlers = new WSHandler<?>[AdminHandlers.values().length];
+        WSHandler[] handlers = new WSHandler[AdminHandlers.values().length];
         for (AdminHandlers metaHandler : AdminHandlers.values()) {
             handlers[i++] = metaHandler.handler();
         }

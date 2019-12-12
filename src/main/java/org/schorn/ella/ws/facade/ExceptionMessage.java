@@ -23,10 +23,6 @@
  */
 package org.schorn.ella.ws.facade;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 
 /**
@@ -41,19 +37,21 @@ public class ExceptionMessage {
     String exception_message;
     @Getter
     String exception_caught;
-    @Getter
-    List<String> stackTrace;
+    //@Getter
+    //List<String> stackTrace;
 
     public ExceptionMessage(Exception exception, String requestURL) {
-        StringWriter stringWriter = new StringWriter();
-        exception.printStackTrace(new PrintWriter(stringWriter));
+        //StringWriter stringWriter = new StringWriter();
+        //exception.printStackTrace(new PrintWriter(stringWriter));
         this.end_point = requestURL;
         this.exception_message = exception.getMessage();
         this.exception_caught = exception.getClass().getName();
+        /*
         this.stackTrace = new ArrayList<>();
         for (String line : stringWriter.toString().split(System.lineSeparator())) {
             this.stackTrace.add(line.replace("\t", ""));
         }
+        */
     }
 
 }

@@ -51,6 +51,13 @@ public enum WSDivision implements WSParameter {
         return this.value;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s.%s",
+                this.getClass().getSimpleName(),
+                this.name());
+    }
+
     static public WSDivision parse(Object value) {
         for (WSDivision division : WSDivision.values()) {
             if (division.name().equalsIgnoreCase(value.toString())) {

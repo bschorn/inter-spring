@@ -41,13 +41,14 @@ public enum WSContentType implements WSParameter {
     XLSX(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")),
     BIN(MediaType.parseMediaType("application/octet-stream"));
 
-    int id;
-    String value;
-    MediaType mediaType;
+    private final int id;
+    private final String value;
+    private final MediaType mediaType;
 
     WSContentType(String value) {
         this.value = value;
         this.id = this.typeId(this.ordinal());
+        this.mediaType = null;
     }
     WSContentType(MediaType mediaType) {
         this.mediaType = mediaType;
@@ -67,6 +68,13 @@ public enum WSContentType implements WSParameter {
 
     public MediaType mediaType() {
         return this.mediaType;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s.%s",
+                this.getClass().getSimpleName(),
+                this.name());
     }
 
     static public WSContentType parse(Object value) throws Exception {

@@ -25,6 +25,7 @@ package org.schorn.ella.ws.request;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  *
@@ -59,6 +60,17 @@ public interface WSRequest {
         private Impl(WSParameter... parameters) {
             this.map = new HashMap<>();
             this.parameters = parameters;
+        }
+
+        @Override
+        public String toString() {
+            StringJoiner joiner = new StringJoiner(", ", "WSParameters: [", "]");
+            for (WSParameter wsParameter : this.parameters) {
+                joiner.add(String.format(wsParameter.toString()));
+            }
+            return String.format("WSRequest(%s) -> %s",
+                    this.contentType.name(),
+                    joiner.toString());
         }
 
         @Override

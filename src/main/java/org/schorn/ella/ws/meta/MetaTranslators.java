@@ -33,6 +33,7 @@ import org.schorn.ella.ws.facade.Contexts;
 import org.schorn.ella.ws.facade.FieldType;
 import org.schorn.ella.ws.facade.FieldTypes;
 import org.schorn.ella.ws.facade.ObjectType;
+import org.schorn.ella.ws.facade.ObjectTypeMembers;
 import org.schorn.ella.ws.facade.ObjectTypes;
 import org.schorn.ella.ws.facade.TableType;
 import org.schorn.ella.ws.facade.ValueType;
@@ -50,6 +51,7 @@ public enum MetaTranslators {
     ArrayType(new WSTranslator<ActiveNode.ArrayType, ArrayType>(ActiveNode.ArrayType.class, ArrayType.class, object -> new ArrayType((ActiveNode.ArrayType) object))),
     ArrayTypes(new WSTranslator<List, ArrayTypes>(List.class, ArrayTypes.class, object -> new ArrayTypes((List<ActiveNode.ArrayType>) object))),
     ObjectType(new WSTranslator<ActiveNode.ObjectType, ObjectType>(ActiveNode.ObjectType.class, ObjectType.class, object -> new ObjectType((ActiveNode.ObjectType) object))),
+    ObjectTypeMembers(new WSTranslator<ActiveNode.ObjectType, ObjectTypeMembers>(ActiveNode.ObjectType.class, ObjectTypeMembers.class, object -> new ObjectTypeMembers((ActiveNode.ObjectType) object))),
     ObjectTypes(new WSTranslator<List, ObjectTypes>(List.class, ObjectTypes.class, object -> new ObjectTypes((List<ActiveNode.ObjectType>) object))),
     ValueType(new WSTranslator<ActiveNode.ValueType, ValueType>(ActiveNode.ValueType.class, ValueType.class, object -> new ValueType((ActiveNode.ValueType) object))),
     ValueTypes(new WSTranslator<List, ValueTypes>(List.class, ValueTypes.class, object -> new ValueTypes((List<ActiveNode.ValueType>) object))),

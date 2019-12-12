@@ -29,6 +29,7 @@ import org.schorn.ella.context.AppContext;
 import org.schorn.ella.node.ActiveNode;
 import org.schorn.ella.ws.request.WSActiveType;
 import org.schorn.ella.ws.request.WSRequest;
+import org.schorn.ella.ws.request.WSResponse;
 
 
 /**
@@ -37,67 +38,163 @@ import org.schorn.ella.ws.request.WSRequest;
  */
 public interface MetaTypeMap {
 
-    static public final Function<WSRequest, AppContext> CONTEXT = r -> {
+    static public final Function<WSRequest, WSResponse> CONTEXT = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         if (context_str != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
-                return optContext.get();
+                return new WSResponse(optContext.get());
+            } else {
+                return new WSResponse(new Exception(
+                        String.format("AppContext: %s was not found. %s: %s",
+                                context_str,
+                                WSRequest.class.getSimpleName(),
+                                r.toString())));
             }
+        } else {
+            return new WSResponse(new Exception(
+                    String.format("AppContext was not provided in request. %s: %s",
+                            context_str,
+                            WSRequest.class.getSimpleName(),
+                            r.toString())));
         }
-        return null;
     };
 
-    static public final Function<WSRequest, ActiveNode.ArrayType> ARRAY = r -> {
+    static public final Function<WSRequest, WSResponse> ARRAY = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String array_type = (String) r.get(WSActiveType.ARRAY);
         if (context_str != null && array_type != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
                 AppContext context = optContext.get();
-                return ActiveNode.ArrayType.get(context, array_type);
+                ActiveNode.ArrayType arrayType = ActiveNode.ArrayType.get(context, array_type);
+                if (arrayType != null) {
+                    return new WSResponse(arrayType);
+                } else {
+                    return new WSResponse(new Exception(
+                            String.format("ArrayType: %s.%s was not found. %s: %s",
+                                    context_str,
+                                    array_type,
+                                    WSRequest.class.getSimpleName(),
+                                    r.toString())));
+                }
+            } else {
+                return new WSResponse(new Exception(
+                        String.format("AppContext: %s was not found. %s: %s",
+                                context_str,
+                                WSRequest.class.getSimpleName(),
+                                r.toString())));
             }
+        } else {
+            return new WSResponse(new Exception(
+                    String.format("AppContext was not provided in request. %s: %s",
+                            context_str,
+                            WSRequest.class.getSimpleName(),
+                            r.toString())));
         }
-        return null;
     };
 
-    static public final Function<WSRequest, ActiveNode.ObjectType> OBJECT = r -> {
+    static public final Function<WSRequest, WSResponse> OBJECT = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String object_type = (String) r.get(WSActiveType.OBJECT);
         if (context_str != null && object_type != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
                 AppContext context = optContext.get();
-                return ActiveNode.ObjectType.get(context, object_type);
+                ActiveNode.ObjectType objectType = ActiveNode.ObjectType.get(context, object_type);
+                if (objectType != null) {
+                    return new WSResponse(objectType);
+                } else {
+                    return new WSResponse(new Exception(
+                            String.format("ObjectType: %s.%s was not found. %s: %s",
+                                    context_str,
+                                    object_type,
+                                    WSRequest.class.getSimpleName(),
+                                    r.toString())));
+                }
+            } else {
+                return new WSResponse(new Exception(
+                        String.format("AppContext: %s was not found. %s: %s",
+                                context_str,
+                                WSRequest.class.getSimpleName(),
+                                r.toString())));
             }
+        } else {
+            return new WSResponse(new Exception(
+                    String.format("AppContext was not provided in request. %s: %s",
+                            context_str,
+                            WSRequest.class.getSimpleName(),
+                            r.toString())));
         }
-        return null;
     };
 
-    static public final Function<WSRequest, ActiveNode.ValueType> VALUE = r -> {
+    static public final Function<WSRequest, WSResponse> VALUE = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String value_type = (String) r.get(WSActiveType.VALUE);
         if (context_str != null && value_type != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
                 AppContext context = optContext.get();
-                return ActiveNode.ValueType.get(context, value_type);
+                ActiveNode.ValueType valueType = ActiveNode.ValueType.get(context, value_type);
+                if (valueType != null) {
+                    return new WSResponse(valueType);
+                } else {
+                    return new WSResponse(new Exception(
+                            String.format("ValueType: %s.%s was not found. %s: %s",
+                                    context_str,
+                                    value_type,
+                                    WSRequest.class.getSimpleName(),
+                                    r.toString())));
+                }
+            } else {
+                return new WSResponse(new Exception(
+                        String.format("AppContext: %s was not found. %s: %s",
+                                context_str,
+                                WSRequest.class.getSimpleName(),
+                                r.toString())));
             }
+        } else {
+            return new WSResponse(new Exception(
+                    String.format("AppContext was not provided in request. %s: %s",
+                            context_str,
+                            WSRequest.class.getSimpleName(),
+                            r.toString())));
         }
-        return null;
     };
 
-    static public final Function<WSRequest, ActiveNode.ValueType.FieldType> FIELD = r -> {
+    static public final Function<WSRequest, WSResponse> FIELD = r -> {
         String context_str = (String) r.get(WSActiveType.CONTEXT);
         String field_type = (String) r.get(WSActiveType.FIELD);
         if (context_str != null && field_type != null) {
             Optional<AppContext> optContext = AppContext.valueOf(context_str);
             if (optContext.isPresent()) {
                 AppContext context = optContext.get();
-                return ActiveNode.ValueType.FieldType.get(context, field_type);
+                //return new Response(ActiveNode.ValueType.FieldType.get(context, field_type));
+                ActiveNode.ValueType.FieldType fieldType = ActiveNode.ValueType.FieldType.get(context, field_type);
+                if (fieldType != null) {
+                    return new WSResponse(fieldType);
+                } else {
+                    return new WSResponse(new Exception(
+                            String.format("FieldType: %s.%s was not found. %s: %s",
+                                    context_str,
+                                    field_type,
+                                    WSRequest.class.getSimpleName(),
+                                    r.toString())));
+                }
+            } else {
+                return new WSResponse(new Exception(
+                        String.format("AppContext: %s was not found. %s: %s",
+                                context_str,
+                                WSRequest.class.getSimpleName(),
+                                r.toString())));
             }
+        } else {
+            return new WSResponse(new Exception(
+                    String.format("AppContext was not provided in request. %s: %s",
+                            context_str,
+                            WSRequest.class.getSimpleName(),
+                            r.toString())));
         }
-        return null;
     };
 
 }

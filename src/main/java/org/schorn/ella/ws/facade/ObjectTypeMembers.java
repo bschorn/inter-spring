@@ -21,51 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.schorn.ella.ws.request;
+package org.schorn.ella.ws.facade;
 
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
 import org.schorn.ella.node.ActiveNode;
-
 /**
  *
  * @author bschorn
  */
-public enum WSActiveData implements WSParameter {
-    VALUE(ActiveNode.ValueType.class),
-    OBJECT(ActiveNode.ObjectType.class),
-    ARRAY(ActiveNode.ArrayType.class);
+public class ObjectTypeMembers extends ObjectType {
 
-    int id;
-    Class<? extends ActiveNode.ActiveType> value;
+    @Getter
+    List<MemberType> member_types;
 
-    WSActiveData(Class<? extends ActiveNode.ActiveType> activeTypeClass) {
-        this.value = activeTypeClass;
-        this.id = this.typeId(this.ordinal());
-    }
-
-    @Override
-    public int id() {
-        return this.id;
-    }
-
-    @Override
-    public Object value() {
-        return this.value;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s.%s",
-                this.getClass().getSimpleName(),
-                this.name());
-    }
-
-    static public WSActiveData parse(Object value) throws Exception {
-        for (WSActiveData activeData : WSActiveData.values()) {
-            if (activeData.name().equalsIgnoreCase(value.toString())) {
-                return activeData;
+    public ObjectTypeMembers(ActiveNode.ObjectType objectType) {
+        super(objectType);
+        this.member_types = new ArrayList<>();
+        for (ActiveNode.MemberDef memberDef : objectType.schema().memberDefs()) {
+            if (memberDef.activeType().role() == ActiveNode.Role.Value) {
+                this.member_types.add(new MemberType(memberDef));
             }
         }
-        throw new Exception(String.format("No Action of '%s' found.", value.toString()));
+        for (ActiveNode.MemberDef memberDef : objectType.schema().memberDefs()) {
+            if (memberDef.activeType().role() == ActiveNode.Role.Object) {
+                this.member_types.add(new MemberType(memberDef));
+            }
+        }
+        for (ActiveNode.MemberDef memberDef : objectType.schema().memberDefs()) {
+            if (memberDef.activeType().role() == ActiveNode.Role.Array) {
+                this.member_types.add(new MemberType(memberDef));
+            }
+        }
     }
 
 }

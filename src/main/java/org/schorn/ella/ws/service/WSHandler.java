@@ -25,27 +25,27 @@ package org.schorn.ella.ws.service;
 
 import java.util.function.Function;
 import org.schorn.ella.ws.request.WSRequest;
+import org.schorn.ella.ws.request.WSResponse;
 
 /**
  * Access internals to satisfy an external request.
  *
  * @author bschorn
- * @param <T>
  */
-public class WSHandler<T> implements Function<WSRequest, T> {
+public class WSHandler implements Function<WSRequest, WSResponse> {
 
     private final int requestTypeId;
-    private final Function<WSRequest, T> handler;
-    private final Class<T> classOf;
+    private final Function<WSRequest, WSResponse> handler;
+    private final Class<?> classOf;
 
-    public WSHandler(int requestTypeId, Function<WSRequest, T> handler, Class<T> classOfT) {
+    public WSHandler(int requestTypeId, Function<WSRequest, WSResponse> handler, Class<?> classOfT) {
         this.requestTypeId = requestTypeId;
         this.handler = handler;
         this.classOf = classOfT;
     }
 
     @Override
-    public T apply(WSRequest request) {
+    public WSResponse apply(WSRequest request) {
         return this.handler.apply(request);
     }
 
@@ -53,7 +53,7 @@ public class WSHandler<T> implements Function<WSRequest, T> {
         return this.requestTypeId;
     }
 
-    public Class<T> classOf() {
+    public Class<?> classOf() {
         return this.classOf;
     }
 

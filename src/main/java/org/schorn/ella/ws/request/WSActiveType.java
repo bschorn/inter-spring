@@ -55,6 +55,13 @@ public enum WSActiveType implements WSParameter {
         return this.value;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s.%s",
+                this.getClass().getSimpleName(),
+                this.name());
+    }
+
     static public WSActiveType parse(Object value) throws Exception {
         for (WSActiveType activeType : WSActiveType.values()) {
             if (activeType.name().equalsIgnoreCase(value.toString())) {

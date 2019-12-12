@@ -34,7 +34,7 @@ import org.schorn.ella.ws.facade.Contexts;
 import org.schorn.ella.ws.facade.ExceptionMessage;
 import org.schorn.ella.ws.facade.FieldType;
 import org.schorn.ella.ws.facade.FieldTypes;
-import org.schorn.ella.ws.facade.ObjectType;
+import org.schorn.ella.ws.facade.ObjectTypeMembers;
 import org.schorn.ella.ws.facade.ObjectTypes;
 import org.schorn.ella.ws.facade.ValueType;
 import org.schorn.ella.ws.facade.ValueTypes;
@@ -46,6 +46,9 @@ import org.schorn.ella.ws.request.WSContentType;
 import org.schorn.ella.ws.request.WSDivision;
 import org.schorn.ella.ws.request.WSRequest;
 import org.schorn.ella.ws.service.WSService;
+import org.schorn.ella.ws.util.Functions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -69,11 +72,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "Meta Data API")
 public class MetaDataController {
 
+    static final Logger LGR = LoggerFactory.getLogger(MetaDataController.class);
+
     @Autowired
     WSService service;
 
     @ExceptionHandler(Exception.class)
     public ExceptionMessage handleException(HttpServletRequest request, Exception exception) {
+        LGR.error("{}.handleException() - EndPoint: {} Exception: {}",
+                this.getClass().getSimpleName(),
+                request.getRequestURL().toString(),
+                Functions.getStackTraceAsString(exception));
         return new ExceptionMessage(exception, request.getRequestURL().toString());
     }
     @PostConstruct
@@ -110,12 +119,12 @@ public class MetaDataController {
     }
 
     @GetMapping("/type/object_type/{context_name}/{object_type_name}")
-    public ObjectType getObjectType(@PathVariable String context_name, @PathVariable String object_type_name) throws Exception {
+    public ObjectTypeMembers getObjectType(@PathVariable String context_name, @PathVariable String object_type_name) throws Exception {
         WSRequest request = WSRequest.create(WSDivision.META, WSAction.TYPE,
                 WSActiveType.OBJECT, WSContentType.JSON);
         request.set(WSActiveType.CONTEXT, context_name);
         request.set(WSActiveType.OBJECT, object_type_name);
-        return service.execute(request, ObjectType.class);
+        return service.execute(request, ObjectTypeMembers.class);
     }
 
     @GetMapping("/list/object_type/{context_name}/{object_type_name}")

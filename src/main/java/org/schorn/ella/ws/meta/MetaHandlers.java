@@ -31,6 +31,7 @@ import org.schorn.ella.ws.request.WSAction;
 import org.schorn.ella.ws.request.WSActiveType;
 import org.schorn.ella.ws.request.WSDivision;
 import org.schorn.ella.ws.request.WSRequest;
+import org.schorn.ella.ws.request.WSResponse;
 import org.schorn.ella.ws.service.WSHandler;
 
 
@@ -50,19 +51,19 @@ public enum MetaHandlers {
     FieldType(WSAction.TYPE, WSActiveType.FIELD, MetaTypeMap.FIELD, ActiveNode.ValueType.FieldType.class),
     FieldTypes(WSAction.LIST, WSActiveType.FIELD, MetaListMap.FIELD, List.class);
 
-    WSHandler<?> handler;
+    WSHandler handler;
 
-    MetaHandlers(WSAction action, WSActiveType activeType, Function<WSRequest, ?> function, Class<?> classOfT) {
+    MetaHandlers(WSAction action, WSActiveType activeType, Function<WSRequest, WSResponse> function, Class<?> classOfT) {
         this.handler = new WSHandler(WSDivision.META.id() + action.id() + activeType.id(), function, classOfT);
     }
 
-    public WSHandler<?> handler() {
+    public WSHandler handler() {
         return this.handler;
     }
 
-    static public WSHandler<?>[] handlers() {
+    static public WSHandler[] handlers() {
         int i = 0;
-        WSHandler<?>[] handlers = new WSHandler<?>[MetaHandlers.values().length];
+        WSHandler[] handlers = new WSHandler[MetaHandlers.values().length];
         for (MetaHandlers metaHandler : MetaHandlers.values()) {
             handlers[i++] = metaHandler.handler();
         }

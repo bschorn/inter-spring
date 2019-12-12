@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.schorn.ella.ws.request.WSRequest;
+import org.schorn.ella.ws.request.WSResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -55,14 +56,21 @@ public class WSService {
      */
     public <T> T execute(WSRequest request, Class<T> classForT) throws Exception {
 
+        //validate(request);
+
         WSHandler handler = getHandler(request);
-        Object response = handler.apply(request);
-        Class<?> sourceClass = response.getClass();
-        if (handler.classOf().isInstance(response)) {
+        WSResponse response = handler.apply(request);
+        if (response == null) {
+            throw new Exception(String.format("There was a null response for %s", request.toString()));
+        } else {
+            response.throwException();
+        }
+        Class<?> sourceClass = response.get().getClass();
+        if (handler.classOf().isInstance(response.get())) {
             sourceClass = handler.classOf();
         }
         WSTranslator translator = getTranslator(sourceClass, classForT);
-        return (T) translator.apply(response);
+        return (T) translator.apply(response.get());
     }
 
     public void addHandlers(WSHandler... handlers) {
@@ -78,13 +86,13 @@ public class WSService {
         this.translators.addAll(Arrays.asList(translators));
     }
 
-    public WSHandler<?> getHandler(WSRequest request) throws Exception {
+    public WSHandler getHandler(WSRequest request) throws Exception {
         WSHandler handler = this.handlers.get(request.getRequestType());
         if (handler != null) {
             return handler;
         }
-        throw new Exception(String.format("WSService: there is no handler for request: %s",
-                request.toString()));
+        throw new Exception(String.format("%s: there is no handler for request: %s",
+                this.getClass().getSimpleName(), request.toString()));
     }
 
     public WSTranslator<?, ?> getTranslator(Class<?> sourceClass, Class<?> targetClass) throws Exception {
@@ -95,8 +103,10 @@ public class WSService {
         if (optTranslator.isPresent()) {
             return optTranslator.get();
         }
-        throw new Exception(String.format("WSService: there is no translator for %s to %s",
-                sourceClass.getName(), targetClass.getName()));
+        throw new Exception(String.format("%s: there is no translator for %s to %s",
+                this.getClass().getSimpleName(),
+                sourceClass.getName(),
+                targetClass.getName()));
     }
 
 }
