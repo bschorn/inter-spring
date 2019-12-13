@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-cp D:/Users/bschorn/documents/GitHub/inter-spring/target/inter-spring-0.0.1-SNAPSHOT.jar -Dloader.path=D:/Users/bschorn/documents/GitHub/jane-bank/target/jane-bank-1.0-SNAPSHOT.jar -Dloader.main=com.schorn.jane.bank.Main -Dspring.profiles.active=dev -classpath %classpath org.springframework.boot.loader.PropertiesLauncher --Active.Root D:/Users/bschorn/documents/GitHub/jane-bank/target/classes --ActivityDate 20191207 --Active.Environment dev --Spec.File ./jane-bank/src/main/resources/model/jane_bank.spec</exec.args>
+                <exec.args>-cp D:/Users/bschorn/documents/GitHub/inter-spring/target/inter-spring-0.0.1-SNAPSHOT.jar -Dloader.path=D:/Users/bschorn/documents/GitHub/jane-bank/target/jane-bank-1.0-SNAPSHOT.jar -Dloader.main=com.schorn.jane.bank.Main -Dspring.profiles.active=dev D:/Users/bschorn/documents/GitHub -classpath %classpath org.springframework.boot.loader.PropertiesLauncher --Create.Meta --Active.Root D:/Users/bschorn/documents/GitHub/jane-bank/src/main/resources --ActivityDate 20191207 --Active.Environment dev --Spec.File ./jane-bank/src/main/resources/model/jane_bank.spec --Meta.File ./jane-bank/src/main/resources/meta/jane_bank.meta.json</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>D:/Users/bschorn/documents/GitHub</exec.workingdir>
             </properties>
@@ -25,7 +25,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -cp D:/Users/bschorn/documents/GitHub/inter-spring/target/inter-spring-0.0.1-SNAPSHOT.jar -Dloader.path=D:/Users/bschorn/documents/GitHub/jane-bank/target/jane-bank-1.0-SNAPSHOT.jar -Dloader.main=com.schorn.jane.bank.Main -Dspring.profiles.active=dev -classpath %classpath org.springframework.boot.loader.PropertiesLauncher --Active.Root D:/Users/bschorn/documents/GitHub/jane-bank/target/classes --ActivityDate 20191207 --Active.Environment dev --Spec.File ./jane-bank/src/main/resources/model/jane_bank.spec</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -cp D:/Users/bschorn/documents/GitHub/inter-spring/target/inter-spring-0.0.1-SNAPSHOT.jar -Dloader.path=D:/Users/bschorn/documents/GitHub/jane-bank/target/jane-bank-1.0-SNAPSHOT.jar -Dloader.main=com.schorn.jane.bank.Main -Dspring.profiles.active=dev D:/Users/bschorn/documents/GitHub -classpath %classpath org.springframework.boot.loader.PropertiesLauncher --Create.Meta --Active.Root D:/Users/bschorn/documents/GitHub/jane-bank/src/main/resources --ActivityDate 20191207 --Active.Environment dev --Spec.File ./jane-bank/src/main/resources/model/jane_bank.spec --Meta.File ./jane-bank/src/main/resources/meta/jane_bank.meta.json</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
                 <exec.workingdir>D:/Users/bschorn/documents/GitHub</exec.workingdir>
@@ -41,7 +41,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-cp D:/Users/bschorn/documents/GitHub/inter-spring/target/inter-spring-0.0.1-SNAPSHOT.jar -Dloader.path=D:/Users/bschorn/documents/GitHub/jane-bank/target/jane-bank-1.0-SNAPSHOT.jar -Dloader.main=com.schorn.jane.bank.Main -Dspring.profiles.active=dev -classpath %classpath org.springframework.boot.loader.PropertiesLauncher --Active.Root D:/Users/bschorn/documents/GitHub/jane-bank/target/classes --ActivityDate 20191207 --Active.Environment dev --Spec.File ./jane-bank/src/main/resources/model/jane_bank.spec</exec.args>
+                <exec.args>-cp D:/Users/bschorn/documents/GitHub/inter-spring/target/inter-spring-0.0.1-SNAPSHOT.jar -Dloader.path=D:/Users/bschorn/documents/GitHub/jane-bank/target/jane-bank-1.0-SNAPSHOT.jar -Dloader.main=com.schorn.jane.bank.Main -Dspring.profiles.active=dev D:/Users/bschorn/documents/GitHub -classpath %classpath org.springframework.boot.loader.PropertiesLauncher --Create.Meta --Active.Root D:/Users/bschorn/documents/GitHub/jane-bank/src/main/resources --ActivityDate 20191207 --Active.Environment dev --Spec.File ./jane-bank/src/main/resources/model/jane_bank.spec --Meta.File ./jane-bank/src/main/resources/meta/jane_bank.meta.json</exec.args>
                 <exec.executable>java</exec.executable>
                 <exec.workingdir>D:/Users/bschorn/documents/GitHub</exec.workingdir>
             </properties>
