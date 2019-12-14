@@ -40,14 +40,14 @@ public class ObjectType {
     @Getter
     String object_level;
     @Getter
-    String object_sub_role;
+    String object_purpose;
 
     public ObjectType(ActiveNode.ObjectType objectType) {
         this.name = objectType.name();
         this.domain_type = objectType.domainType().name();
-        this.object_role = objectType.objectRole().name();
-        this.object_level = objectType.objectLevel().name();
-        this.object_sub_role = objectType.objectSubRole().name();
+        this.object_role = objectType.category().name();
+        this.object_level = objectType.level().name();
+        this.object_purpose = objectType.purpose().name();
     }
 
 }
