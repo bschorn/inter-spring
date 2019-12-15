@@ -23,6 +23,8 @@
  */
 package org.schorn.ella.ws.facade;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import org.schorn.ella.node.ActiveNode;
 /**
@@ -34,20 +36,16 @@ public class ObjectType {
     @Getter
     String name;
     @Getter
-    String domain_type;
-    @Getter
-    String object_role;
-    @Getter
-    String object_level;
-    @Getter
-    String object_purpose;
+    Map<String, String> attributes;
 
     public ObjectType(ActiveNode.ObjectType objectType) {
         this.name = objectType.name();
-        this.domain_type = objectType.domainType().name();
-        this.object_role = objectType.category().name();
-        this.object_level = objectType.level().name();
-        this.object_purpose = objectType.purpose().name();
+        if (!objectType.attributes().isEmpty()) {
+            this.attributes = new HashMap<>();
+            for (ActiveNode.TypeAttribute typeAttribute : objectType.attributes()) {
+                this.attributes.put(typeAttribute.attributeName(), typeAttribute.attributeValue());
+            }
+        }
     }
 
 }
