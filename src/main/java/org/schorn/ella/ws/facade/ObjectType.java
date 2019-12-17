@@ -23,7 +23,9 @@
  */
 package org.schorn.ella.ws.facade;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.Getter;
 import org.schorn.ella.node.ActiveNode;
@@ -37,6 +39,8 @@ public class ObjectType {
     String name;
     @Getter
     Map<String, String> attributes;
+    @Getter
+    List<String> base_types;
 
     public ObjectType(ActiveNode.ObjectType objectType) {
         this.name = objectType.name();
@@ -44,6 +48,12 @@ public class ObjectType {
             this.attributes = new HashMap<>();
             for (ActiveNode.TypeAttribute typeAttribute : objectType.attributes()) {
                 this.attributes.put(typeAttribute.attributeName(), typeAttribute.attributeValue());
+            }
+        }
+        if (!objectType.baseTypes().isEmpty()) {
+            this.base_types = new ArrayList<>();
+            for (ActiveNode.ObjectType baseType : objectType.baseTypes()) {
+                this.base_types.add(baseType.name());
             }
         }
     }
