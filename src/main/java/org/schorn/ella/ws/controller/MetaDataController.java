@@ -27,6 +27,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
+import org.schorn.ella.services.ActiveServices;
 import org.schorn.ella.ws.facade.ArrayType;
 import org.schorn.ella.ws.facade.ArrayTypes;
 import org.schorn.ella.ws.facade.Context;
@@ -125,6 +127,12 @@ public class MetaDataController {
         request.set(WSActiveType.CONTEXT, context_name);
         request.set(WSActiveType.OBJECT, object_type_name);
         return service.execute(request, ObjectTypeMembers.class);
+    }
+
+    @GetMapping("/html/object_type/{context_name}/{object_type_name}")
+    public Response getObjectTypeHtml(@PathVariable String context_name, @PathVariable String object_type_name) throws Exception {
+        String html = ActiveServices.contentTypeOutput().getHTMLForm(context_name, object_type_name);
+        return Response.ok(html).build();
     }
 
     @GetMapping("/list/object_type/{context_name}/{object_type_name}")

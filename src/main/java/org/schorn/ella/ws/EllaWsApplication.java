@@ -1,10 +1,13 @@
 package org.schorn.ella.ws;
 
+import org.glassfish.jersey.server.ResourceConfig;
+import org.schorn.ella.ws.controller.MetaHtmlController;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 
 /**
  * SpringBootServletInitializer is abstract class that implements
@@ -48,5 +51,10 @@ public class EllaWsApplication extends SpringBootServletInitializer {
             this.app.configure(this.builder);
             this.builder.run(this.args);
         }
+    }
+
+    @Bean
+    ResourceConfig resourceConfig() {
+        return new ResourceConfig().register(MetaHtmlController.class);
     }
 }
