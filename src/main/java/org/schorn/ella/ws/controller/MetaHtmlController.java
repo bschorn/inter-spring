@@ -3,6 +3,7 @@ package org.schorn.ella.ws.controller;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
@@ -45,13 +46,15 @@ public class MetaHtmlController {
      *
      * @param context
      * @param object_type
+     * @param lang
      * @return
      */
     @GET
     @Path("/page/{context}/{object_type}")
     public Response getHtmlFormInPage(
             @PathParam("context") String context,
-            @PathParam("object_type") String object_type) {
+            @PathParam("object_type") String object_type,
+            @QueryParam("lang") String lang) {
         String html = ActiveServices.contentTypeOutput().getHTMLFormInPage(context, object_type);
         return Response.ok(html).build();
     }
