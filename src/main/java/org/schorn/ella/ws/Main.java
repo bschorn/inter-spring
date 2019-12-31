@@ -26,7 +26,7 @@ package org.schorn.ella.ws;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.schorn.ella.app.ActiveMain;
+import org.schorn.ella.app.ActiveApp;
 import org.schorn.ella.node.MetaReader;
 import org.schorn.ella.schema.ActiveSchemaParser;
 import org.schorn.ella.util.CommandLineArgs;
@@ -43,7 +43,7 @@ public class Main {
     private final boolean createMeta;
     private final boolean loadMeta;
     private final boolean useSpring;
-    private ActiveMain.Starter starter;
+    private ActiveApp.Starter starter;
 
     public Main(String[] args) {
         this.args = args;
@@ -80,7 +80,7 @@ public class Main {
         if (this.createMeta) {
             this.createMeta();
         } else {
-            this.starter = new ActiveMain.Starter(args).create();
+            this.starter = new ActiveApp.Starter(args).create();
             if (this.loadMeta) {
                 this.loadMeta();
             }
