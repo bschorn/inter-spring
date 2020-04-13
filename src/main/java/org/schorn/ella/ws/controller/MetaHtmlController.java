@@ -58,6 +58,23 @@ public class MetaHtmlController {
         String html = ActiveServices.contentTypeOutput().getHTMLFormInPage(context, object_type);
         return Response.ok(html).build();
     }
+    /**
+     *
+     * @param context
+     * @param app_view
+     * @param object_type
+     * @param lang
+     * @return
+     */
+    @GET
+    @Path("/page/{context}/{app_view}")
+    public Response getHtmlAppPage(
+            @PathParam("context") String context,
+            @PathParam("app_view") String app_view,
+            @QueryParam("lang") String lang) {
+        String html = ActiveServices.contentTypeOutput().getHTMLAppInPage(context, app_view);
+        return Response.ok(html).build();
+    }
 }
 
 
